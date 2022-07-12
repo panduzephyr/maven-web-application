@@ -93,7 +93,7 @@
 		</dependency>
 		
 	</dependencies>
-<!--	
+	
 	<distributionManagement>
 	
 	    <repository>
@@ -108,7 +108,7 @@
 	      <url>http://13.235.24.83:8082/mithuntechnologies/repository/walmart-snapshot/</url>
 	    </snapshotRepository>
 	    
-	</distributionManagement>  -->
+	</distributionManagement>  
 	
 	<build>
 		<finalName>maven-web-application</finalName>
