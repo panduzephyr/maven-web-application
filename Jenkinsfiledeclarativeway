@@ -1,5 +1,8 @@
 pipeline{
 agent any
+parameters {
+  choice choices: ['development', 'qa', 'master', 'uat', 'patch-1 '], description: 'Select Branch Name', name: 'BranchName'
+}
 tools{
 maven "maven3.8.5"
 }
@@ -16,7 +19,7 @@ stages{
 stage('CheckoutCode'){
 steps{
     slacknotifications("STARTED")
-git branch: 'qa', credentialsId: '67b36730-1097-4a12-8bbd-f63ce27c537b', url: 'https://github.com/panduzephyr/maven-web-application.git'
+git branch: "${param.BranchName}", credentialsId: '67b36730-1097-4a12-8bbd-f63ce27c537b', url: 'https://github.com/panduzephyr/maven-web-application.git'
 }
 }
 // Do the build
