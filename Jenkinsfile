@@ -8,7 +8,8 @@ echo "The Job Name is: ${env.WORKSPACE}"
 echo "The Job Name is: ${env.NODE_LABELS}"
 echo "The Job Name is: ${env.NODE_NUMBER}"
 echo "The Job Name is: ${env.BUILD_URL}"
- try{
+try{
+slacknotifications("STARTED")
 stage('CheckoutCode')
 {
 git branch: 'qa', credentialsId: '67b36730-1097-4a12-8bbd-f63ce27c537b', url: 'https://github.com/panduzephyr/maven-web-application.git'
