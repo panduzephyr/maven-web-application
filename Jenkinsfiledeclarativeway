@@ -19,7 +19,7 @@ stages{
 stage('CheckoutCode'){
 steps{
     slacknotifications("STARTED")
-git branch: "${param.BranchName}", credentialsId: '67b36730-1097-4a12-8bbd-f63ce27c537b', url: 'https://github.com/panduzephyr/maven-web-application.git'
+git branch: "${params.BranchName}", credentialsId: '67b36730-1097-4a12-8bbd-f63ce27c537b', url: 'https://github.com/panduzephyr/maven-web-application.git'
 }
 }
 // Do the build
