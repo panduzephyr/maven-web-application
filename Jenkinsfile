@@ -32,19 +32,19 @@ sshagent(['d0fe678d-d9a1-4eaa-b86c-c8fd4a888248']) {
 sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@35.154.54.250:/opt/apache-tomcat-9.0.64/webapps"
 
 }
-}
 } */
- catch (e) {
+}
+catch (e) {
     // If there was an exception thrown, the build failed
-    currentBuild.result = "FAILED"
+    currentBuild.result = "FAILURE"
     throw e
-  } finally {
+  }
+ finally {
     // Success or failure, always send notifications
     notifyBuild(currentBuild.result)
   }
-}
-} //Node Closing 
 
+} // Node Closing
 def slacknotifications(String buildStatus = 'STARTED') {
   // build status of null means successful
   buildStatus =  buildStatus ?: 'SUCCESS'
