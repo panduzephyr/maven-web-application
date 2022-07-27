@@ -1,0 +1,30 @@
+pipeline{
+agent any
+tools{
+maven "maven3.8.5"
+}
+stages{
+//Get the code from github
+stage('CheckoutCode'){
+steps{
+    
+git branch: 'qa', credentialsId: '67b36730-1097-4a12-8bbd-f63ce27c537b', url: 'https://github.com/panduzephyr/maven-web-application.git'
+}
+}
+//Run Unit Test cases & Do the Build
+stage('RunUnitTestcases & Build'){
+steps{
+parallel(
+    RunUnitTestCases: {
+    sh "mvn test"
+    },
+    Build: {
+     sh "mvn clean package"  
+    }
+    
+    )
+
+}
+}
+} //Stage Closing
+} //Pipeline Closing
