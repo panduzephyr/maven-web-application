@@ -1,0 +1,74 @@
+pipeline{
+agent any
+tools{
+maven "maven3.8.5"
+}
+stages{
+//Get the code from github
+stage('CheckoutCode'){
+steps{
+    slacknotifications("STARTED")
+git branch: 'development', credentialsId: '740cb0ee-78de-4fbb-8d47-f067503addcb', url: 'https://github.com/panduzephyr/maven-web-application.git'
+}
+}
+// Do the build
+stage('Build'){
+steps{
+sh "mvn clean package"
+}
+}
+//Execute SonarQube Report
+stage('ExecuteSonarQubeReport'){
+steps{
+sh "mvn clean sonar:sonar"
+}
+}
+//Upload Artifacts Into Nexus
+stage('UploadArtifactsIntoNexus'){
+steps{
+sh "mvn deploy"
+}
+}
+//Deploy App Into Tomcat Server
+stage('DeployAppIntoTomcatServer'){
+steps{
+sshagent(['064d97c7-e040-4b50-9d64-ba4b45ffc764']) {    
+sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@65.1.2.120:/opt/apache-tomcat-9.0.79/webapps/"
+}
+}
+}
+} //Stage Closing
+post {
+  success {
+    slacknotifications(currentBuild.result)
+  }
+  failure {
+    slacknotifications(currentBuild.result)
+  }
+}
+} // Pipeline Closing
+def slacknotifications(String buildStatus = 'STARTED') {
+ 
+  buildStatus =  buildStatus ?: 'SUCCESS'
+
+  // Default values
+  def colorName = 'RED'
+  def colorCode = '#FF0000'
+  def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+  def summary = "${subject} (${env.BUILD_URL})"
+
+  // Override default values based on build status
+  if (buildStatus == 'STARTED') {
+    color = 'ORANGE'
+    colorCode = '#FFA500'
+  } else if (buildStatus == 'SUCCESS') {
+    color = 'GREEN'
+    colorCode = '#00FF00'
+  } else {
+    color = 'RED'
+    colorCode = '#FF0000'
+  }
+
+  // Send notifications
+  slackSend (color: colorCode, message: summary)
+}
